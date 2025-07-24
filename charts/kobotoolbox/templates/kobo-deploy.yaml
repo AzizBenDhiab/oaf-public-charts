@@ -33,17 +33,30 @@ spec:
             - "{{ .Values.kpi.subdomain }}.{{ .Values.general.externalDomain }}"
             - "{{ .Values.kobocat.subdomain }}.{{ .Values.general.externalDomain }}"
             {{- end }}
-
       initContainers:
-        # Wait for Mongo and Postgres
+        # Wait for Mongo and Postgres - FIXED VERSION
         - name: wait-db
-          image: jwilder/dockerize
-          # We don't care about having latest...
+          image: busybox:1.35  # FIXED: Use working image with proper shell
           imagePullPolicy: IfNotPresent
           command:
-            - sh
+            - /bin/sh
             - -c
-            - dockerize -timeout=120s -wait tcp://${KOBO_MONGO_HOST}:${KOBO_MONGO_PORT} -wait tcp://${POSTGRES_HOST}:${POSTGRES_PORT}
+            - |
+              echo "Waiting for PostgreSQL..."
+              until nc -z ${POSTGRES_HOST} ${POSTGRES_PORT}; do 
+                echo "PostgreSQL not ready, waiting..."
+                sleep 3
+              done
+              echo "PostgreSQL is ready!"
+              
+              echo "Waiting for MongoDB..."
+              until nc -z ${KOBO_MONGO_HOST} ${KOBO_MONGO_PORT}; do
+                echo "MongoDB not ready, waiting..."
+                sleep 3
+              done
+              echo "MongoDB is ready!"
+              
+              echo "All databases are ready!"
           env:
             {{- include "env_mongo" . | nindent 12 }}
             {{- include "env_postgres" . | nindent 12 }}
