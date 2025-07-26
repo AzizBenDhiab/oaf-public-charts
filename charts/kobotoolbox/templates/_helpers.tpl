@@ -3,11 +3,11 @@
 {{- end -}}
 
 {{- define "kc_dburl" -}}
-postgis://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.postgresPassword }}@{{ include "postgres_host" . }}:5432/{{ .Values.postgresql.kobocatDatabase }}
+postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.postgresPassword }}@{{ include "postgres_host" . }}:5432/{{ .Values.postgresql.kobocatDatabase }}
 {{- end -}}
 
 {{- define "kpi_dburl" -}}
-postgis://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.postgresPassword }}@{{ include "postgres_host" . }}:5432/{{ .Values.postgresql.kpiDatabase }}
+postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.postgresPassword }}@{{ include "postgres_host" . }}:5432/{{ .Values.postgresql.kpiDatabase }}
 {{- end -}}
 
 {{- define "mongo_db_url" -}}
